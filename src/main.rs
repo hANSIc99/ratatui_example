@@ -13,6 +13,23 @@ use std::io::{stdout};
 use anyhow::Result;
 pub type Frame<'a> = ratatui::Frame<'a>;
 
+// https://ratatui.rs/tutorial/counter-app/tui.html
+
+/// Application.
+pub mod app;
+
+/// Terminal events handler.
+pub mod event;
+
+/// Widget renderer.
+pub mod ui;
+
+/// Terminal user interface.
+pub mod tui;
+
+/// Application updater.
+pub mod update;
+
 struct App {
     counter: i64,
     should_quit: bool,
