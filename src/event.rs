@@ -11,9 +11,9 @@ pub enum Event {
   Tick,
   /// Key press.
   Key(KeyEvent),
-  /// Mouse click/scroll.
+
   Mouse(MouseEvent),
-  /// Terminal resize.
+
   Resize(u16, u16),
 }
 
@@ -62,7 +62,7 @@ use crossterm::event::{self, Event as CrosstermEvent, KeyEvent, MouseEvent};
                 },
                 CrosstermEvent::Mouse(e) => sender.send(Event::Mouse(e)),
                 CrosstermEvent::Resize(w, h) => sender.send(Event::Resize(w, h)),
-                _ => unimplemented!(),
+                _ => /* unimplemented! */Ok(()), 
               }
               .expect("failed to send terminal event")
             }

@@ -19,7 +19,7 @@ use ratatui::{
       .block(
         Block::default()
           .title("Counter App")
-          .title_alignment(Alignment::Center)a
+          .title_alignment(Alignment::Center)
           .borders(Borders::ALL)
           .border_type(BorderType::Rounded),
       )
