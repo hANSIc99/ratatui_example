@@ -2,8 +2,8 @@ mod tui;
 
 use std::time::Duration;
 
-use color_eyre::eyre::Result;
-//use anyhow::Result;
+//use color_eyre::eyre::Result;
+use anyhow::Result;
 use ratatui::{prelude::*, widgets::*};
 use tokio::sync::mpsc::{self, UnboundedSender};
 use tui::{Event, EventHandler, Tui};
@@ -122,13 +122,13 @@ async fn run() -> Result<()> {
   loop {
     let event = events.next().await?; // new
 
-    // application update
-    update(&mut app, event)?;
+    // // application update
+    // update(&mut app, event)?;
 
-    // application render
-    t.draw(|f| {
-      ui(f, &app);
-    })?;
+    // // application render
+    // t.draw(|f| {
+    //   ui(f, &app);
+    // })?;
 
     // application exit
     if app.should_quit {

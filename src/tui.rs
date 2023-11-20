@@ -1,6 +1,6 @@
+use std::{io, panic};
 use crossterm::event::{KeyEvent, KeyEventKind, MouseEvent, EventStream};
 use crossterm::event::{Event as CrosstermEvent};
-//use color_eyre::{eyre::eyre, SectionExt, Section, eyre::Report};
 use futures::{StreamExt, FutureExt};
 use tokio::{sync::mpsc::{self, UnboundedReceiver, UnboundedSender}, task::JoinHandle};
 use anyhow::Result;
@@ -8,7 +8,7 @@ use ratatui::{
   prelude::{CrosstermBackend, Terminal},
   widgets::Paragraph,
 };
-
+use io;
 use crossterm::{
   event::{self, Event::Key, KeyCode::Char},
   execute,
@@ -90,9 +90,10 @@ impl EventHandler {
     Self { _tx, rx, task: Some(task) }
   }
 
-  pub async fn next(&mut self) -> Result<Event> {
+  pub async fn next(&mut self) -> anyhow::Result<Event> {
     //self.rx.recv().await.ok_or(Err(color_eyre::eyre::eyre!("Unable to get event"))) // TODO
     self.rx.recv().await.ok_or(anyhow::anyhow!("bla"))
+    //self.rx.recv().await.ok_or(std::error::Error("err"))
   }
 }
 
@@ -122,13 +123,13 @@ impl Tui {
           maybe_event = crossterm_event => {
             match maybe_event {
               Some(Ok(evt)) => {
-                match evt {
-                  CrosstermEvent::Key(key) => {
-                    if key.kind == KeyEventKind::Press {
-                      _event_tx.send(Event::Key(key)).unwrap();
-                    }
-                  },
-                }
+                // match evt {
+                //   CrosstermEvent::Key(key) => {
+                //     if key.kind == KeyEventKind::Press {
+                //       _event_tx.send(Event::Key(key)).unwrap();
+                //     }
+                //   },
+                // }
               }
               Some(Err(_)) => {
                 _event_tx.send(Event::Error).unwrap();
@@ -155,7 +156,7 @@ impl Tui {
     ///
     /// It enables the raw mode and sets terminal properties.
     pub fn enter(&mut self) -> Result<()> {
-      terminal::enable_raw_mode()?;
+      enable_raw_mode()?;
       crossterm::execute!(io::stderr(), EnterAlternateScreen, EnableMouseCapture)?;
   
       // Define a custom panic hook to reset the terminal properties.
@@ -176,7 +177,7 @@ impl Tui {
     /// This function is also used for the panic hook to revert
     /// the terminal properties if unexpected errors occur.
     fn reset() -> Result<()> {
-        terminal::disable_raw_mode()?;
+        disable_raw_mode()?;
         crossterm::execute!(io::stderr(), LeaveAlternateScreen, DisableMouseCapture)?;
         Ok(())
     }
