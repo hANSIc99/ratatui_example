@@ -1,5 +1,6 @@
-use crossterm::event::{KeyEvent, MouseEvent, EventStream};
+use crossterm::event::{KeyEvent, KeyEventKind, MouseEvent, EventStream};
 use crossterm::event::{Event as CrosstermEvent};
+//use color_eyre::{eyre::eyre, SectionExt, Section, eyre::Report};
 use futures::{StreamExt, FutureExt};
 use tokio::{sync::mpsc::{self, UnboundedReceiver, UnboundedSender}, task::JoinHandle};
 use anyhow::Result;
@@ -7,6 +8,15 @@ use ratatui::{
   prelude::{CrosstermBackend, Terminal},
   widgets::Paragraph,
 };
+
+use crossterm::{
+  event::{self, Event::Key, KeyCode::Char},
+  execute,
+  event::EnableMouseCapture, event::DisableMouseCapture,
+  terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
+};
+
+pub type CrosstermTerminal = ratatui::Terminal<ratatui::backend::CrosstermBackend<std::io::Stderr>>;
 
 #[derive(Clone, Debug)]
 pub enum Event {
@@ -16,8 +26,8 @@ pub enum Event {
   Closed,
   Tick,
   Render,
-  FocusGained,
-  FocusLost,
+  //FocusGained,
+  //FocusLost,
   Paste(String),
   Key(KeyEvent),
   Mouse(MouseEvent),
@@ -81,7 +91,8 @@ impl EventHandler {
   }
 
   pub async fn next(&mut self) -> Result<Event> {
-    self.rx.recv().await.ok_or(color_eyre::eyre::eyre!("Unable to get event"))
+    //self.rx.recv().await.ok_or(Err(color_eyre::eyre::eyre!("Unable to get event"))) // TODO
+    self.rx.recv().await.ok_or(anyhow::anyhow!("bla"))
   }
 }
 
